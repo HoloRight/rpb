@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const utils = require('./utils')
 
 module.exports.buildFontProvider = (pngfile) => {
@@ -38,17 +39,57 @@ module.exports.buildAll = () => {
         fs.mkdirSync('./res/assets/minecraft/font', {
             recursive: true
         })
+    
+    if(!fs.existsSync('./res/assets/minecraft/models/item'))
+        fs.mkdirSync('./res/assets/minecraft/models/item', {
+            recursive: true
+        })
+    
+    if(!fs.existsSync('./res/assets/holoright/models'))
+        fs.mkdirSync('./res/assets/holoright/models', {
+            recursive: true
+        })
+    
+    if(!fs.existsSync('./res/assets/holoright/textures'))
+        fs.mkdirSync('./res/assets/holoright/textures', {
+            recursive: true
+        })
 
     const providers = []
     const files = utils.scanAllFiles('./gen')
 
     files.forEach(file => {
         if(file.endsWith('.png')) {
-            console.log('Building: ' + file)
+            console.log('Building font: ' + file)
             this.copyPngFile(file.replace('./gen/', ''))
             providers.push(this.buildFontProvider(file.replace('./gen', '')))
         }
     })
+
+    if(fs.existsSync('./gen_cmd')) {
+        fs.readdirSync('./gen_cmd').forEach((itemId) => {
+            const overrides = []
+            fs.readdirSync('./gen_cmd/' + itemId).forEach((customModelData) => {
+                console.log('Copying model: ' + itemId + ' - ' + customModelData.replace('.json', ''))
+                overrides.push({
+                    predicate: {custom_model_data: parseInt(customModelData.replace('.json', '')), model: 'holoright:' + itemId + '_' + customModelData.replace('.json', '')}
+                })
+                fs.copyFileSync('./gen_cmd/' + itemId + '/' + customModelData, './res/assets/holoright/models/' + itemId + '_' + customModelData)
+            })
+            const vanillaJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'item_models', itemId + '.json')))
+
+            vanillaJson.overrides = overrides
+
+            fs.writeFileSync('./res/assets/minecraft/models/item/' + itemId + '.json', JSON.stringify(vanillaJson))
+        })
+    }
+
+    if(fs.existsSync('./gen_texture')) {
+        fs.readdirSync('./gen_texture').forEach((itemId) => {
+            console.log('Copying texture: ' + itemId)
+            fs.copyFileSync('./gen_texture/' + itemId, './res/assets/holoright/textures/' + itemId)
+        })
+    }
 
     const fontMapping = {}
 
