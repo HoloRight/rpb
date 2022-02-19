@@ -2,11 +2,11 @@ const fs = require('fs')
 const utils = require('./utils')
 
 module.exports.buildFontProvider = (pngfile) => {
-    const meta = fs.readFileSync('./gen/' + pngfile + '.json')
+    const meta = JSON.parse(fs.readFileSync('./gen/' + pngfile + '.json'))
     const id = pngfile.replace('.png', '')
     let str = ''
 
-    for(let i = 0; i < 4; i++) {
+    for(let i = 0; i < 1; i++) {
         str += '\\' + 'u' + utils.generateFontChar().toUpperCase()
     }
 
