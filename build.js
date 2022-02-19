@@ -21,12 +21,12 @@ module.exports.buildFontProvider = (pngfile) => {
 }
 
 module.exports.copyPngFile = (genFile) => {
-    if(!fs.existsSync('./res/assets/holoright/font'))
-        fs.mkdirSync('./res/assets/holoright/font', {
+    if(!fs.existsSync('./res/assets/holoright/textures/font'))
+        fs.mkdirSync('./res/assets/holoright/textures/font', {
             recursive: true
         })
     
-    fs.copyFileSync('./gen/' + genFile, './res/assets/holoright/font/' + genFile)
+    fs.copyFileSync('./gen/' + genFile, './res/assets/holoright/textures/font/' + genFile)
 }
 
 module.exports.buildAll = () => {
