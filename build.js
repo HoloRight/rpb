@@ -2,6 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const utils = require('./utils')
 
+let namespace = 'holoright'
+
 module.exports.buildFontProvider = (pngfile) => {
     const meta = JSON.parse(fs.readFileSync('./gen/' + pngfile + '.json'))
     const id = pngfile.replace('.png', '')
@@ -14,7 +16,7 @@ module.exports.buildFontProvider = (pngfile) => {
     return {
         id: id.substring(1, id.length),
         type: 'bitmap',
-        file: 'holoright:font' + pngfile,
+        file: namespace + ':font' + pngfile,
         ascent: meta.ascent,
         height: meta.height,
         chars: [str]
@@ -22,15 +24,18 @@ module.exports.buildFontProvider = (pngfile) => {
 }
 
 module.exports.copyPngFile = (genFile) => {
-    if(!fs.existsSync('./res/assets/holoright/textures/font'))
-        fs.mkdirSync('./res/assets/holoright/textures/font', {
+    if(!fs.existsSync('./res/assets/' + namespace + '/textures/font'))
+        fs.mkdirSync('./res/assets/' + namespace + '/textures/font', {
             recursive: true
         })
     
-    fs.copyFileSync('./gen/' + genFile, './res/assets/holoright/textures/font/' + genFile)
+    fs.copyFileSync('./gen/' + genFile, './res/assets/' + namespace + '/textures/font/' + genFile)
 }
 
 module.exports.buildAll = () => {
+
+    if(fs.existsSync('./rpb.json'))
+        namespace = JSON.parse(fs.readFileSync('./rpb.json')).namespace
 
     if(fs.existsSync('./res'))
         fs.rmSync('./res', { recursive: true, force: true })
@@ -45,13 +50,13 @@ module.exports.buildAll = () => {
             recursive: true
         })
     
-    if(!fs.existsSync('./res/assets/holoright/models'))
-        fs.mkdirSync('./res/assets/holoright/models', {
+    if(!fs.existsSync('./res/assets/' + namespace + '/models'))
+        fs.mkdirSync('./res/assets/' + namespace + '/models', {
             recursive: true
         })
     
-    if(!fs.existsSync('./res/assets/holoright/textures'))
-        fs.mkdirSync('./res/assets/holoright/textures', {
+    if(!fs.existsSync('./res/assets/' + namespace + '/textures'))
+        fs.mkdirSync('./res/assets/' + namespace + '/textures', {
             recursive: true
         })
 
@@ -72,9 +77,9 @@ module.exports.buildAll = () => {
             fs.readdirSync('./gen_cmd/' + itemId).forEach((customModelData) => {
                 console.log('Copying model: ' + itemId + ' - ' + customModelData.replace('.json', ''))
                 overrides.push({
-                    predicate: {custom_model_data: parseInt(customModelData.replace('.json', '')), model: 'holoright:' + itemId + '_' + customModelData.replace('.json', '')}
+                    predicate: {custom_model_data: parseInt(customModelData.replace('.json', '')), model: '' + namespace + ':' + itemId + '_' + customModelData.replace('.json', '')}
                 })
-                fs.copyFileSync('./gen_cmd/' + itemId + '/' + customModelData, './res/assets/holoright/models/' + itemId + '_' + customModelData)
+                fs.copyFileSync('./gen_cmd/' + itemId + '/' + customModelData, './res/assets/' + namespace + '/models/' + itemId + '_' + customModelData)
             })
             const vanillaJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'item_models', itemId + '.json')))
 
@@ -87,7 +92,7 @@ module.exports.buildAll = () => {
     if(fs.existsSync('./gen_texture')) {
         fs.readdirSync('./gen_texture').forEach((itemId) => {
             console.log('Copying texture: ' + itemId)
-            fs.copyFileSync('./gen_texture/' + itemId, './res/assets/holoright/textures/' + itemId)
+            fs.copyFileSync('./gen_texture/' + itemId, './res/assets/' + namespace + '/textures/' + itemId)
         })
     }
 
