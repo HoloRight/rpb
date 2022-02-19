@@ -14,4 +14,4 @@ A resource pack builder that used on a minecraft server that called "Holoright"
 
 ## How to use
 
-1. run `rpb build` at working directory
+Read our [docs](https://github.com/HoloRight/rpb/wiki)
