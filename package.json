@@ -1,9 +1,9 @@
 {
-  "name": "rpb",
-  "version": "1.0.0",
+  "name": "respb",
+  "version": "1.0.1",
   "description": "Resource pack builder",
   "main": "index.js",
-  "license": "MIT",
+  "license": "GPL v3.0",
   "dependencies": {
     "express": "^4.17.3",
     "moment": "^2.29.1"
