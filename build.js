@@ -59,6 +59,11 @@ module.exports.buildAll = () => {
         fs.mkdirSync('./res/assets/' + namespace + '/textures', {
             recursive: true
         })
+    
+    if(!fs.existsSync('./res/assets/' + namespace + '/sounds/'))
+        fs.mkdirSync('./res/assets/' + namespace + '/sounds/', {
+            recursive: true
+        })
 
     const providers = []
     const files = utils.scanAllFiles('./gen')
@@ -94,6 +99,27 @@ module.exports.buildAll = () => {
             console.log('Copying texture: ' + itemId)
             fs.copyFileSync('./gen_texture/' + itemId, './res/assets/' + namespace + '/textures/' + itemId)
         })
+    }
+
+    if(fs.existsSync('./gen_sound')) {
+
+        let metadata = {}
+
+        fs.readdirSync('./gen_sound').forEach((soundFile) => {
+            if(soundFile.endsWith('.ogg')) {
+                console.log('Copying sound: ' + soundFile)
+                fs.copyFileSync('./gen_sound/' + soundFile, './res/assets/' + namespace + '/sounds/' + soundFile)
+            } else if(soundFile.endsWith('.ogg.json')) {
+                const json = JSON.parse(fs.readFileSync('./gen_sound/' + soundFile))
+                metadata[soundFile.replace('.ogg.json', '')] = {category: json.category, sounds: [namespace + ':' + soundFile.replace('.ogg.json', '')]}
+            } else {
+                console.log('Failed to copy sound ' + soundFile + '! the sound is not .ogg!')
+            }
+        })
+
+        console.log('Writing sound metadata')
+
+        fs.writeFileSync('./res/assets/' + namespace + '/sounds.json', JSON.stringify(metadata))
     }
 
     const fontMapping = {}
