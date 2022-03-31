@@ -1,6 +1,6 @@
 {
   "name": "respb",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Resource pack builder",
   "main": "index.js",
   "license": "GPL v3.0",
