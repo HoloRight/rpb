@@ -62,6 +62,6 @@ module.exports.scanAllFiles = (dir) => {
 module.exports.pack = {
     pack: {
         pack_format: 8,
-        description: 'Holoright Resource Pack'
+        description: 'Resource Pack'
     }
 }

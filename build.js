@@ -7,10 +7,18 @@ let namespace = 'holoright'
 module.exports.buildFontProvider = (pngfile) => {
     const meta = JSON.parse(fs.readFileSync('./gen/' + pngfile + '.json'))
     const id = pngfile.replace('.png', '')
-    let str = ''
+    let chars = []
 
-    for(let i = 0; i < 1; i++) {
-        str += '\\' + 'u' + utils.generateFontChar().toUpperCase()
+    let row = meta.row !== undefined ? meta.row : 1
+    let column = meta.column !== undefined ? meta.column : 1
+
+
+    for(let i = 0; i < row; i++) {
+        let str = ''
+        for(let j = 0; j < column; j++) {
+            str += '\\' + 'u' + utils.generateFontChar().toUpperCase()
+        }
+        chars.push(str)
     }
 
     return {
@@ -19,7 +27,7 @@ module.exports.buildFontProvider = (pngfile) => {
         file: namespace + ':font' + pngfile,
         ascent: meta.ascent,
         height: meta.height,
-        chars: [str]
+        chars: chars
     }
 }
 
@@ -125,7 +133,7 @@ module.exports.buildAll = () => {
     const fontMapping = {}
 
     providers.forEach((elem) => {
-        fontMapping[elem.id] = elem.chars[0]
+        fontMapping[elem.id] = elem.chars
     })
 
     fs.writeFileSync('./res/fontmap.json', JSON.stringify(fontMapping).replace(/\\\\/g, '\\'))
