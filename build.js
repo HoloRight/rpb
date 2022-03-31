@@ -76,6 +76,12 @@ module.exports.buildAll = () => {
     const providers = []
     const files = utils.scanAllFiles('./gen')
 
+    if(fs.existsSync('./default_font_providers.json')) {
+        JSON.parse(fs.readFileSync('./default_font_providers.json')).providers.forEach((provider) => {
+            providers.push(provider)
+        })
+    }
+
     files.forEach(file => {
         if(file.endsWith('.png')) {
             console.log('Building font: ' + file)
