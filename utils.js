@@ -29,8 +29,9 @@ module.exports.generateFontChar = () => {
     let id = this.makeid(4)
 
     let regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9| |ㅏ-ㅢ-ㅣ|\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]+$/
+    let invaild_unicode_hex = /[\ud800-\udbff][\udc00-\udfff]|[\ud800-\udfff]/g
 
-    while(this.fromUnicodeString(id).match(regex)) {
+    while(this.fromUnicodeString(id).match(regex) || this.fromUnicodeString(id).match(invaild_unicode_hex)) {
         id = this.makeid(4)
     }
 
